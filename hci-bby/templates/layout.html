@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Reading Habit Tracker{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#1f1e1b] text-[#eae4dc] min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-[#3b2f2f] text-[#eae4dc] py-5">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <a href="/" class="text-2xl font-bold hover:text-[#c4b7a6]">
+                Pain w Purpose
+            </a>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="{{ url_for('signup')}}" class="hover:text-[#a99985]">Sign Up</a></li>
+                    <li><a href="{{ url_for('login') }}" class="hover:text-[#a99985]">Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Block -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-[#3b2f2f] text-[#eae4dc] py-6">
+        <div class="container mx-auto text-center px-6">
+            <p>&copy; 2025 Pain w Purpose</p>
+        </div>
+    </footer>
+
+</body>
+</html>

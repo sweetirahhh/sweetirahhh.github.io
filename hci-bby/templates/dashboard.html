@@ -1,0 +1,97 @@
+{% extends 'user_layout.html' %}
+
+{% block content %}
+<script>
+    function openAddPagesModal(bookId) {
+        document.getElementById('modalBookId').value = bookId;
+        document.getElementById('addPagesModal').classList.remove('hidden');
+        document.getElementById('addPagesForm').action = `/update_pages/${bookId}`;
+    }
+
+    function closeModal() {
+        document.getElementById('addPagesModal').classList.add('hidden');
+    }
+</script>
+
+<div class="container mx-auto p-6 bg-[#f3eee7] text-[#3a2e28] rounded-md shadow-sm">
+    <div class="mb-8 text-center">
+        <h1 class="text-2xl font-bold">Hello, {{ user.user.user_metadata["username"] }}!</h1>
+        <p class="text-lg text-[#a0724a] mt-1">You currently have <span class="font-semibold">{{ points }}</span> points.</p>
+    </div>
+
+    <!-- Book Input Form -->
+    <div class="flex justify-center mt-6">
+        <form action="/add_book" method="POST" class="bg-[#fffaf3] border border-[#e0d7ce] p-6 rounded-lg shadow-md w-full max-w-md">
+            {{ form.csrf_token }}
+            <h2 class="text-xl font-semibold mb-4 text-center">Add a New Book</h2>
+            <div class="mb-4">
+                <label for="title" class="block text-[#5c4a3d] font-medium mb-2">Book Name</label>
+                <input type="text" id="title" name="title" class="w-full px-4 py-2 border border-[#ccbca6] bg-[#f9f6f0] text-[#3a2e28] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c8a77d]" required>
+            </div>
+            <div class="mb-4">
+                <label for="pages" class="block text-[#5c4a3d] font-medium mb-2">Number of Pages</label>
+                <input type="number" id="pages" name="pages" class="w-full px-4 py-2 border border-[#ccbca6] bg-[#f9f6f0] text-[#3a2e28] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c8a77d]" required>
+            </div>
+            <div class="flex justify-center">
+                <button type="submit" class="bg-[#c8a77d] text-white px-6 py-2 rounded-lg hover:bg-[#b3916a] transition-colors">Add Book</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Display Books -->
+    <div class="mt-12">
+        {% if books %}
+            <div class="flex justify-center flex-wrap gap-8">
+                {% for book in books %}
+                <div class="relative flex flex-col items-center">
+                    <div class="relative w-40 h-40">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="45" stroke="#e0d7ce" stroke-width="6" fill="none"/>
+                            <circle
+                                cx="50"
+                                cy="50"
+                                r="45"
+                                stroke="#c8a77d"
+                                stroke-width="6"
+                                fill="none"
+                                stroke-dasharray="282.6"
+                                stroke-dashoffset="{{ 282.6 - (book.progress / 100 * 282.6) }}"
+                                stroke-linecap="round"
+                            />
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center space-y-0.5">
+                            <p class="text-[#a0724a] font-bold text-sm break-words max-w-[5.5rem]">{{ book.title }}</p>
+                            <p class="text-[#5c4a3d] text-sm">{{ book.read }}/{{ book.pages }} read</p>
+                            <p class="text-[#3a2e28] font-semibold text-sm">{{ book.progress }}%</p>
+                            <a href="javascript:void(0)" onclick="openAddPagesModal('{{ book.id }}')" class="text-[#a0724a] text-xs underline hover:text-[#7a5b3d]">Add Pages</a>
+                            <a href="{{ url_for('remove_book', book_id=book.id) }}" class="text-[#8b8375] text-xs underline hover:text-red-500">Remove</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-center text-[#8b8375] text-lg mt-10">There are no books added yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Add Pages Modal -->
+    <div id="addPagesModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-[#fffaf3] border border-[#e0d7ce] p-6 rounded-lg shadow-lg w-full max-w-sm relative text-[#3a2e28]">
+            <button onclick="closeModal()" class="absolute top-2 right-2 text-[#8b8375] hover:text-[#3a2e28] text-2xl">&times;</button>
+            <h3 class="text-lg font-semibold text-center mb-4 text-[#a0724a]">Add Pages Read</h3>
+            <form method="POST" id="addPagesForm" class="space-y-4">
+                {{ form.csrf_token }}
+                <input type="hidden" name="book_id" id="modalBookId">
+                <div>
+                    <label class="block text-sm font-medium text-[#5c4a3d] mb-1">Pages Read</label>
+                    <input type="number" name="pages_read" min="1" required class="w-full px-4 py-2 border border-[#ccbca6] bg-[#f9f6f0] text-[#3a2e28] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c8a77d]">
+                </div>
+                <div class="flex justify-center">
+                    <button type="submit" class="bg-[#c8a77d] text-white px-6 py-2 rounded-lg hover:bg-[#b3916a] transition-colors">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

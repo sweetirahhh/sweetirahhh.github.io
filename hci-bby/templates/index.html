@@ -1,0 +1,48 @@
+{% extends 'layout.html' %}
+
+{% block title %}Home - P W P{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section id="home" class="bg-[#4a403a] text-[#f2ede3] py-20">
+        <div class="container mx-auto text-center px-6">
+            <h2 class="text-4xl font-bold mb-4">Track Your Reading Progress</h2>
+            <p class="text-lg mb-6">Keep track of the books you're reading, set goals, and earn rewards!</p>
+            <a href="{{ url_for('signup') }}" class="bg-[#f2ede3] text-[#4a403a] px-6 py-3 text-xl font-semibold rounded-lg hover:bg-[#d6cfc4] transition">
+                Get Started
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-[#eae4dc] text-[#2f2b28]">
+        <div class="container mx-auto text-center px-6">
+            <h2 class="text-3xl font-semibold mb-8">Key Features</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="bg-[#dcd6cc] p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Track Your Books</h3>
+                    <p>Log the books you're reading and track your progress and get 10 points every 10% progress as you go.</p>
+                </div>
+                <div class="bg-[#dcd6cc] p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Personalize Your Rewards</h3>
+                    <p>Set your own reward and claim it once the points collected is exceeded.</p>
+                </div>
+                <div class="bg-[#dcd6cc] p-6 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-semibold mb-4">Arrange Your Custom Rewards</h3>
+                    <p>Rearrange your reward with the priority feature and allign with your own goals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section id="signup" class="bg-[#4a403a] text-[#f2ede3] py-20">
+        <div class="container mx-auto text-center px-6">
+            <h2 class="text-3xl font-semibold mb-6">Join Us Today</h2>
+            <p class="text-lg mb-6">Sign up to start tracking your reading and earn your personalized rewards!</p>
+            <a href="{{ url_for('signup') }}" class="bg-[#f2ede3] text-[#4a403a] px-6 py-3 text-xl font-semibold rounded-lg hover:bg-[#d6cfc4] transition">
+                Sign Up Now
+            </a>
+        </div>
+    </section>
+{% endblock %}
