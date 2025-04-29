@@ -1,5 +1,0 @@
-python-dotenv
-flask
-supabase
-email-validator
-WTForms
