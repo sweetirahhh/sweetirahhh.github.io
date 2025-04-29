@@ -1,0 +1,114 @@
+{% extends 'user_layout.html' %}
+
+{% block title %}Rewards - Pain With Purpose{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-6 bg-[#f3eee7] text-[#3a2e28] rounded-md shadow-sm">
+
+    <div class="mb-8 text-center">
+        <h1 class="text-2xl font-bold">Manage Your Rewards</h1>
+        <p class="text-lg text-[#a0724a] mt-1">You currently have <span class="font-semibold">{{ points }}</span> points.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-4">
+          {% for category, message in messages %}
+            <div class="p-3 rounded text-sm font-medium
+                        {{ 'bg-[#eef9f1] border border-green-500 text-green-700' if category == 'success'
+                           else 'bg-[#fbeaea] border border-red-500 text-red-700' if category == 'error'
+                           else 'bg-[#eaf2fa] border border-blue-500 text-blue-700' }}"
+                 role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Add Reward Form -->
+    <div class="flex justify-center mb-12">
+        <form action="{{ url_for('add_reward') }}" method="POST"
+              class="bg-[#fffaf3] p-6 rounded-lg shadow-md w-full max-w-md space-y-4 border border-[#e0d7ce]">
+            {{ form.csrf_token }}
+            <h2 class="text-xl font-semibold text-center">Add New Reward</h2>
+
+            <div>
+                <label for="reward_name" class="block text-[#5c4a3d] font-medium mb-1">Reward Name</label>
+                <input type="text" name="reward_name" id="reward_name" required
+                       class="w-full px-4 py-2 border border-[#ccbca6] bg-[#f9f6f0] text-[#3a2e28] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c8a77d]">
+            </div>
+
+            <div>
+                <label for="points_required" class="block text-[#5c4a3d] font-medium mb-1">Points Required</label>
+                <input type="number" name="points_required" id="points_required" required min="1"
+                       class="w-full px-4 py-2 border border-[#ccbca6] bg-[#f9f6f0] text-[#3a2e28] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#c8a77d]">
+            </div>
+
+            <div class="flex justify-center">
+                <button type="submit"
+                        class="bg-[#c8a77d] text-white px-6 py-2 rounded-lg hover:bg-[#b3916a] transition-colors">
+                    Add Reward
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Rewards Table -->
+    <div class="bg-[#fffaf3] p-6 rounded-lg shadow-md border border-[#e0d7ce]">
+        <h2 class="text-xl font-semibold mb-4 text-center">Current Rewards (Ordered by Priority)</h2>
+
+        {% if rewards %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-[#dcd2c5]">
+                    <thead class="bg-[#f3eee7] text-[#5c4a3d]">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Priority</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Reward</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Points</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-[#f9f6f0] divide-y divide-[#e4d9cc] text-[#3a2e28]">
+                        {% for reward in rewards %}
+                        <tr>
+                            <td class="px-6 py-4 text-sm font-medium">{{ reward.priority }}</td>
+                            <td class="px-6 py-4 text-sm">{{ reward.reward_name }}</td>
+                            <td class="px-6 py-4 text-sm">{{ reward.points }}</td>
+                            <td class="px-6 py-4 text-sm font-medium space-x-2">
+
+                                {% if reward.priority != 1 %}
+                                <form action="{{ url_for('prioritise_reward', reward_id=reward.id) }}" method="POST" class="inline">
+                                    {{ form.csrf_token }}
+                                    <button type="submit" class="text-[#705bb3] hover:text-[#8c77d6]">Prioritise</button>
+                                </form>
+                                {% else %}
+                                <span class="text-[#8b8375] italic text-xs">(Highest)</span>
+                                {% endif %}
+
+                                {% if reward.id in rewards_claim %}
+                                <form action="{{ url_for('claim_reward', reward_id=reward.id) }}" method="POST" class="inline">
+                                    {{ form.csrf_token }}
+                                    <button type="submit" class="text-[#3a7f3a] hover:text-[#2d6c2d]">Claim</button>
+                                </form>
+                                {% else %}
+                                <span class="text-[#a19587] italic">Claim</span>
+                                {% endif %}
+
+                                <form action="{{ url_for('remove_reward', reward_id=reward.id) }}" method="POST" class="inline">
+                                    {{ form.csrf_token }}
+                                    <button type="submit" class="text-red-500 hover:text-red-700">Remove</button>
+                                </form>
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-center text-[#8b8375] italic mt-4">You haven't added any rewards yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
